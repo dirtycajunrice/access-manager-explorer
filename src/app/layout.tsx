@@ -38,7 +38,7 @@ export const viewport: Viewport = {
   ],
 }
 export const metadata: Metadata = {
-  metadataBase: new URL("https://access-manager.openzeppelin.com"),
+  metadataBase: new URL("https://access-manager.cajun.tools"),
   title,
   description,
   icons: {
