@@ -35,16 +35,16 @@ const useSignatures = (config: UseSignaturesConfig) => {
 
   const response = useSWR<Response, string>(
     new URL(join("api", "v1", "signatures"), signatureDatabase) +
-      "?" +
-      query.toString(),
-    (url: string) => fetch(url).then((res) => res.json())
+    "?" +
+    query.toString(),
+    (url: string) => fetch(url).then((res) => res.json()),
   );
 
   const result = response?.data?.result;
 
   const functionWithFallback = useCallback(
     (selector: Hex) => result?.function?.[selector][0]?.name ?? selector,
-    [result]
+    [ result ],
   );
 
   return {

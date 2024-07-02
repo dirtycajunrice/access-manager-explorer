@@ -1,15 +1,15 @@
-import { FC, ReactNode } from "react";
-import { RainbowKit, Urql } from "@/components/providers";
+import Navbar from "@/components/navbar";
+import { URQLProvider } from "@/components/providers/urql-provider";
+import Sidebar from "@/components/sidebar";
+import { description, title } from "@/config/site";
+import { EntitiesProvider } from "@/providers/entities";
 import { FavoritesProvider } from "@/providers/favorites";
-import { NextIntlClientProvider } from "next-intl";
 import { RouteNetworkProvider } from "@/providers/route-network";
 import { SupportedChainId } from "@/types";
 import { Flex, ScrollArea } from "@radix-ui/themes";
-import Navbar from "@/components/navbar";
-import Sidebar from "@/components/sidebar";
-import { EntitiesProvider } from "@/providers/entities";
-import type { Metadata } from 'next'
-import { title, description } from "@/config/site";
+import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { FC, ReactNode } from "react";
 
 type Props = {
   children: ReactNode;
@@ -17,21 +17,20 @@ type Props = {
     chainId: SupportedChainId;
   };
 };
- 
+
 export async function generateMetadata(
-  { params }: Props
+  { params }: Props,
 ): Promise<Metadata> {
   return {
-    title: title + ' for ' + params.chainId,
-    description: description.slice(0,-1) + ' for ' + params.chainId + '.',
-  }
+    title: title + " for " + params.chainId,
+    description: description.slice(0, -1) + " for " + params.chainId + ".",
+  };
 }
 
 const ExplorerLayout: FC<Props> = ({ children, params: { chainId } }) => {
   return (
     <RouteNetworkProvider routeChainId={chainId}>
-      <Urql>
-        <RainbowKit>
+      <URQLProvider>
           <NextIntlClientProvider locale="en" messages={{}}>
             <FavoritesProvider>
               <EntitiesProvider>
@@ -50,8 +49,7 @@ const ExplorerLayout: FC<Props> = ({ children, params: { chainId } }) => {
               </EntitiesProvider>
             </FavoritesProvider>
           </NextIntlClientProvider>
-        </RainbowKit>
-      </Urql>
+      </URQLProvider>
     </RouteNetworkProvider>
   );
 };

@@ -1,16 +1,12 @@
 import "./globals.css";
-import "@rainbow-me/rainbowkit/styles.css";
 import "@radix-ui/themes/styles.css";
-import type { Metadata } from "next";
-import { title, description } from "@/config/site";
-import { WagmiConfig } from "wagmi";
+import { Providers } from "@/components/providers";
+import { description, title } from "@/config/site";
 import { cn } from "@/utils";
-import { config } from "@/config/wallet";
-import { FC, ReactNode } from "react";
-import { Theme } from "@/components/providers";
+import type { Metadata, Viewport } from "next";
+import { getLocale } from "next-intl/server";
 import LocalFont from "next/font/local";
-import { gaId } from "@/config/env";
-import Script from "next/script";
+import type {  PropsWithChildren } from "react";
 
 const silka = LocalFont({
   src: [
@@ -31,20 +27,20 @@ const silka = LocalFont({
     },
   ],
   display: "block",
-  fallback: ["Inter", "Helvetica Neue", "Helvetica", "sans-serif", "system-ui"],
+  fallback: [ "Inter", "Helvetica Neue", "Helvetica", "sans-serif", "system-ui" ],
   variable: "--font-silka",
 });
 
-const gtag = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
-
-export const metadata: Metadata = {
-  metadataBase: new URL("https://access-manager.openzeppelin.com"),
-  title,
-  description,
+export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
+}
+export const metadata: Metadata = {
+  metadataBase: new URL("https://access-manager.openzeppelin.com"),
+  title,
+  description,
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
@@ -57,37 +53,19 @@ export const metadata: Metadata = {
     title,
     description,
     creator: "@openzeppelin",
-    images: ["/banner.png"],
+    images: [ "/banner.png" ],
   },
 };
 
-type Props = { children: ReactNode };
-
-const RootLayout: FC<Props> = ({ children }) => {
+const RootLayout = async ({ children }: Readonly<PropsWithChildren>) => {
+  const locale = await getLocale();
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        {gaId && (
-          <>
-            <Script async src={gtag} />
-            <Script id="google-analytics">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${gaId}', {
-                  page_path: window.location.pathname
-                });
-              `}
-            </Script>
-          </>
-        )}
-      </head>
       <body className={cn(silka.variable)} suppressHydrationWarning>
         <main className="h-[100vh]">
-          <WagmiConfig config={config}>
-            <Theme>{children}</Theme>
-          </WagmiConfig>
+          <Providers>
+            {children}
+          </Providers>
         </main>
       </body>
     </html>

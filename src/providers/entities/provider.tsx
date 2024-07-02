@@ -1,7 +1,7 @@
 "use client";
-import { createContext, ReactNode, FC, useMemo } from "react";
 import { AddressEntity, Entity } from "@/types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { createContext, FC, ReactNode, useMemo } from "react";
 
 interface Props {
   children: ReactNode;
@@ -15,16 +15,21 @@ export interface EntityInstance {
 interface Context {
   entities: EntityInstance[];
   push: (entry: EntityInstance, at: number) => void;
-  splice(start: number, deleteCount: number, ...items: string[]): void;
-  splice(start: number, deleteCount?: number): void;
   clearAndPush: (entry: EntityInstance) => void;
+
+  splice(start: number, deleteCount: number, ...items: string[]): void;
+
+  splice(start: number, deleteCount?: number): void;
 }
 
 const defaultContext: Context = {
   entities: [],
-  push: () => {},
-  splice: () => {},
-  clearAndPush: () => {},
+  push: () => {
+  },
+  splice: () => {
+  },
+  clearAndPush: () => {
+  },
 };
 
 const entitiesContext = createContext<Context>(defaultContext);
@@ -44,7 +49,7 @@ enum EntityPrefix {
 export type URLSafeId = `${EntityPrefix}-${string}`;
 
 const fromUrlSafeId = (id: URLSafeId): EntityInstance => {
-  const [prefix, rest] = id.split("-");
+  const [ prefix, rest ] = id.split("-");
 
   return {
     type: fromPrefix(prefix as EntityPrefix),
@@ -102,19 +107,25 @@ const EntitiesProvider: FC<Props> = ({ children }) => {
     const params = new URLSearchParams(searchParams);
     const entityUrlSafeIds = params.getAll(SEARCH_PARAMS_KEY);
     return entityUrlSafeIds.map((id) => fromUrlSafeId(id as URLSafeId));
-  }, [searchParams]);
+  }, [ searchParams ]);
 
   const push = (entity: EntityInstance, at?: number) => {
-    if (at) splice(at + 1, entities.length - at + 1, toUrlSafeId(entity));
-    else splice(entities.length, 0 + 1, toUrlSafeId(entity));
+    if (at) {
+      splice(at + 1, entities.length - at + 1, toUrlSafeId(entity));
+    } else {
+      splice(entities.length, 0 + 1, toUrlSafeId(entity));
+    }
   };
 
   const splice = (start: number, deleteCount?: number, ...items: string[]) => {
     const params = new URLSearchParams(searchParams);
     const entityUrlSafeIds = searchParams.getAll(SEARCH_PARAMS_KEY);
     params.delete(SEARCH_PARAMS_KEY);
-    if (deleteCount) entityUrlSafeIds.splice(start, deleteCount, ...items);
-    else entityUrlSafeIds.splice(start);
+    if (deleteCount) {
+      entityUrlSafeIds.splice(start, deleteCount, ...items);
+    } else {
+      entityUrlSafeIds.splice(start);
+    }
     for (const id of entityUrlSafeIds) {
       params.append(SEARCH_PARAMS_KEY, id);
     }

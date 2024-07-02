@@ -1,27 +1,23 @@
-import { useWalletClient } from "wagmi";
 import AccessManager from "@openzeppelin/contracts/build/contracts/AccessManager.json";
-import { Abi, Address, Hex } from "viem";
 import { useCallback } from "react";
+import { Abi, Address, Hex } from "viem";
+import { useDeployContract, useWalletClient } from "wagmi";
 
 const useDeploy = (account?: Address) => {
-  const { data: walletClient, ...client } = useWalletClient();
+  const { deployContract, data } = useDeployContract()
+  const manager = useCallback(async (initialAdmin?: Address) => {
 
-  const manager = useCallback(
-    (initialAdmin?: Address) => {
-      const abi = AccessManager.abi as Abi;
-      const bytecode = AccessManager.bytecode as Hex;
-      return walletClient?.deployContract({
-        abi,
-        account,
+      return deployContract({
+        abi: AccessManager.abi as Abi,
+        bytecode: AccessManager.bytecode as Hex,
         args: [initialAdmin],
-        bytecode,
-      });
+      })
     },
-    [walletClient, account]
+    [ account ],
   );
 
   return {
-    client,
+    hash: data,
     manager,
   };
 };

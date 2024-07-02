@@ -1,9 +1,10 @@
-import { ComponentProps, FC } from "react";
-import { Box, Card } from "@radix-ui/themes";
 import { cn } from "@/utils";
+import { Box, Card } from "@radix-ui/themes";
+import { ComponentProps, FC } from "react";
 import Content from "./content";
 
-interface Props extends ComponentProps<typeof Card> {}
+interface Props extends ComponentProps<typeof Card> {
+}
 
 const Sidebar: FC<Props> = ({ style, ...props }) => {
   return (
@@ -11,7 +12,7 @@ const Sidebar: FC<Props> = ({ style, ...props }) => {
       <Card
         className={cn(
           "no-radius flex border-r hidden lg:block h-full w-80",
-          props.className
+          props.className,
         )}
         size="2"
         style={{

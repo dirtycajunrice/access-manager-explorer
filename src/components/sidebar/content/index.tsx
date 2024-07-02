@@ -1,90 +1,81 @@
 "use client";
 
-import * as Collapsible from "@radix-ui/react-collapsible";
-import { FC, useMemo, useState } from "react";
 import Address from "@/components/address";
-import { Button, Flex, Heading, Separator, Text } from "@radix-ui/themes";
-import {
-  ArrowRightIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-  PlusIcon,
-} from "@radix-ui/react-icons";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import useAccount from "@/hooks/use-account";
-import { useQuery } from "urql";
-import { postEvent } from "@/config/gtag";
-import { useNetwork } from "wagmi";
-import { ACCESS_MANAGER_ROLE_MEMBERS_QUERY } from "./requests";
-import MemberOf from "./member-of";
-import { useFavorites } from "@/providers/favorites";
-import { AddressEntity, Entity } from "@/types";
-import { Address as AddressType } from "viem";
-import FavoritesSection from "./favorites-section";
-import Role from "@/components/role";
-import { makeFragmentData } from "@/gql";
-import { ACCESS_MANAGER_ROLE_FRAGMENT } from "@/components/role/requests";
 import Selector from "@/components/function";
 import { ACCESS_MANAGER_TARGET_FUNCTION_FRAGMENT } from "@/components/function/requests";
+import Role from "@/components/role";
+import { ACCESS_MANAGER_ROLE_FRAGMENT } from "@/components/role/requests";
+import { makeFragmentData } from "@/gql";
+import useAccount from "@/hooks/use-account";
 import { useEntities } from "@/providers/entities";
 import { EntityInstance } from "@/providers/entities/provider";
+import { useFavorites } from "@/providers/favorites";
+import { AddressEntity, Entity } from "@/types";
+import * as Collapsible from "@radix-ui/react-collapsible";
+import { ChevronDownIcon, ChevronRightIcon, PlusIcon } from "@radix-ui/react-icons";
+import { Button, Flex, Heading, Separator, Text } from "@radix-ui/themes";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
+import { FC, useMemo, useState } from "react";
+import { useQuery } from "urql";
+import { Address as AddressType } from "viem";
+import FavoritesSection from "./favorites-section";
+import MemberOf from "./member-of";
+import { ACCESS_MANAGER_ROLE_MEMBERS_QUERY } from "./requests";
 
 interface Props {
   onNavigate?: (entity: EntityInstance) => void;
 }
 
-const DEMO_MANAGER = "0x4ee69a1703b717cb46cd12c71c6fe225f646ba1e";
-
-const Content: FC<Props> = ({ onNavigate = () => {} }) => {
-  const [open, setOpen] = useState(true);
+const Content: FC<Props> = ({ onNavigate = () => console.log() }) => {
+  const [ open, setOpen ] = useState(true);
   const { address, isConnected } = useAccount();
-  const { chain } = useNetwork();
-  const { openConnectModal } = useConnectModal();
+  const { open: openWeb3Modal } = useWeb3Modal();
   const entities = useEntities();
 
-  const [{ data, fetching }] = useQuery({
+  const [ { data, fetching } ] = useQuery({
     query: ACCESS_MANAGER_ROLE_MEMBERS_QUERY,
     variables: {
       address: address ?? "",
     },
     pause: !address,
   });
-
   const { getFavorites } = useFavorites();
 
   const accessManagerFavorites = useMemo(
     () => getFavorites(AddressEntity.AccessManager),
-    [getFavorites]
+    [ getFavorites ],
   );
   const accessManagedFavorites = useMemo(
     () => getFavorites(AddressEntity.AccessManaged),
-    [getFavorites]
+    [ getFavorites ],
   );
   const accessManagerRoleFavorites = useMemo(
     () => getFavorites(Entity.AccessManagerRole),
-    [getFavorites]
+    [ getFavorites ],
   );
   const accessManagerRoleMemberFavorites = useMemo(
     () => getFavorites(AddressEntity.AccessManagerRoleMember),
-    [getFavorites]
+    [ getFavorites ],
   );
   const accessManagerTargetFavorites = useMemo(
     () => getFavorites(AddressEntity.AccessManagerTarget),
-    [getFavorites]
+    [ getFavorites ],
   );
-  const accessManagerTargetFunctionFavorites = useMemo(
+  const accessManagerTargetFuncFavorites = useMemo(
     () => getFavorites(Entity.AccessManagerTargetFunction),
-    [getFavorites]
+    [ getFavorites ],
   );
 
   const isEmpty = useMemo(
-    () =>
-      accessManagerFavorites.length == 0 &&
-      accessManagedFavorites.length == 0 &&
-      accessManagerRoleFavorites.length == 0 &&
-      accessManagerRoleMemberFavorites.length == 0 &&
-      accessManagerTargetFavorites.length == 0 &&
-      accessManagerTargetFunctionFavorites.length == 0,
+    () => {
+      const a = accessManagerFavorites.length === 0 &&
+        accessManagedFavorites.length === 0 &&
+        accessManagerRoleFavorites.length === 0;
+      const b = accessManagerRoleMemberFavorites.length === 0 &&
+        accessManagerTargetFavorites.length === 0 &&
+        accessManagerTargetFuncFavorites.length === 0;
+      return a && b;
+    },
 
     [
       accessManagerFavorites,
@@ -92,12 +83,11 @@ const Content: FC<Props> = ({ onNavigate = () => {} }) => {
       accessManagerRoleFavorites,
       accessManagerRoleMemberFavorites,
       accessManagerTargetFavorites,
-      accessManagerTargetFunctionFavorites,
-    ]
+      accessManagerTargetFuncFavorites,
+    ],
   );
 
   const clearAndPushNav = (entity: EntityInstance) => {
-    postEvent({}, "demo", chain?.name ?? "none");
     entities.clearAndPush(entity);
     onNavigate(entity);
   };
@@ -133,10 +123,10 @@ const Content: FC<Props> = ({ onNavigate = () => {} }) => {
                     >
                       <span className="sr-only">Loading...</span>
                     </div>
-                  ) : !open ? (
-                    <ChevronRightIcon width="16" height="16" />
-                  ) : (
+                  ) : open ? (
                     <ChevronDownIcon width="16" height="16" />
+                  ) : (
+                    <ChevronRightIcon width="16" height="16" />
                   )}
                 </Flex>
               </Collapsible.Trigger>
@@ -148,7 +138,7 @@ const Content: FC<Props> = ({ onNavigate = () => {} }) => {
               size="2"
               variant="ghost"
               color="gray"
-              onClick={openConnectModal}
+              onClick={() => openWeb3Modal({ view: "Connect" })}
             >
               <Heading as="h2" size="2" mr="2">
                 Add wallet
@@ -158,9 +148,7 @@ const Content: FC<Props> = ({ onNavigate = () => {} }) => {
           )}
         </Flex>
         <Collapsible.Content className="pt-2">
-          {!data?.accessManagerRoleMembers ? (
-            <></>
-          ) : data?.accessManagerRoleMembers.length == 0 ? (
+          {data?.accessManagerRoleMembers ? data?.accessManagerRoleMembers.length === 0 ? (
             <Flex ml="4" direction="column">
               <Text size="2" color="gray">
                 No membership found 🤷🏻‍♂️
@@ -170,6 +158,8 @@ const Content: FC<Props> = ({ onNavigate = () => {} }) => {
             <Heading as="h2" size="1" ml="4" mb="1">
               Member of
             </Heading>
+          ) : (
+            <></>
           )}
           {data?.accessManagerRoleMembers?.map((membership) => (
             <MemberOf
@@ -186,7 +176,7 @@ const Content: FC<Props> = ({ onNavigate = () => {} }) => {
         <FavoritesSection
           name="Access Managers"
           data={accessManagerFavorites}
-          onRender={([displayName, id]) => (
+          onRender={([ displayName, id ]) => (
             <Button
               key={`${AddressEntity.AccessManager}-${id}`}
               my="1"
@@ -219,7 +209,7 @@ const Content: FC<Props> = ({ onNavigate = () => {} }) => {
         <FavoritesSection
           name="Access Managed"
           data={accessManagedFavorites}
-          onRender={([displayName, id]) => (
+          onRender={([ displayName, id ]) => (
             <Button
               key={`${AddressEntity.AccessManaged}-${id}`}
               my="1"
@@ -252,8 +242,8 @@ const Content: FC<Props> = ({ onNavigate = () => {} }) => {
         <FavoritesSection
           name="Roles"
           data={accessManagerRoleFavorites}
-          onRender={([displayName, id]) => {
-            const [roleId, accessManager] = id.split("/").reverse();
+          onRender={([ displayName, id ]) => {
+            const [ roleId, accessManager ] = id.split("/").reverse();
             return (
               <Button
                 key={`${Entity.AccessManagerRole}-${id}`}
@@ -277,7 +267,7 @@ const Content: FC<Props> = ({ onNavigate = () => {} }) => {
                           id: roleId,
                         },
                       },
-                      ACCESS_MANAGER_ROLE_FRAGMENT
+                      ACCESS_MANAGER_ROLE_FRAGMENT,
                     )}
                   />
                   <Address
@@ -301,8 +291,8 @@ const Content: FC<Props> = ({ onNavigate = () => {} }) => {
         <FavoritesSection
           name="Memberships"
           data={accessManagerRoleMemberFavorites}
-          onRender={([displayName, id]) => {
-            const [member, roleId, accessManager] = id.split("/").reverse();
+          onRender={([ displayName, id ]) => {
+            const [ member, roleId, accessManager ] = id.split("/").reverse();
             return (
               <Button
                 key={`${AddressEntity.AccessManagerRoleMember}-${id}`}
@@ -336,7 +326,7 @@ const Content: FC<Props> = ({ onNavigate = () => {} }) => {
                           id: roleId,
                         },
                       },
-                      ACCESS_MANAGER_ROLE_FRAGMENT
+                      ACCESS_MANAGER_ROLE_FRAGMENT,
                     )}
                   />
                   <Address
@@ -360,8 +350,8 @@ const Content: FC<Props> = ({ onNavigate = () => {} }) => {
         <FavoritesSection
           name="Targets"
           data={accessManagerTargetFavorites}
-          onRender={([displayName, id]) => {
-            const [target] = id.split("/").reverse();
+          onRender={([ displayName, id ]) => {
+            const [ target ] = id.split("/").reverse();
             return (
               <Button
                 key={`${AddressEntity.AccessManagerTarget}-${id}`}
@@ -392,12 +382,12 @@ const Content: FC<Props> = ({ onNavigate = () => {} }) => {
           }}
         />
       )}
-      {accessManagerTargetFunctionFavorites.length > 0 && (
+      {accessManagerTargetFuncFavorites.length > 0 && (
         <FavoritesSection
           name="Functions"
-          data={accessManagerTargetFunctionFavorites}
-          onRender={([displayName, id]) => {
-            const [method, target] = id.split("/").reverse();
+          data={accessManagerTargetFuncFavorites}
+          onRender={([ displayName, id ]) => {
+            const [ method, target ] = id.split("/").reverse();
             return (
               <Button
                 key={`${Entity.AccessManagerTargetFunction}-${id}`}
@@ -432,7 +422,7 @@ const Content: FC<Props> = ({ onNavigate = () => {} }) => {
                           id: method,
                         },
                       },
-                      ACCESS_MANAGER_TARGET_FUNCTION_FRAGMENT
+                      ACCESS_MANAGER_TARGET_FUNCTION_FRAGMENT,
                     )}
                   />
                 </Flex>

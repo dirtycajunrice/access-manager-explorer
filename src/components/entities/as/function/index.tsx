@@ -1,7 +1,7 @@
 "use client";
+import FunctionHeader from "@/components/function";
 import { ComponentProps, FC } from "react";
 import Entity from "../entity";
-import FunctionHeader from "@/components/function";
 
 interface Props extends Omit<ComponentProps<typeof Entity>, "header" | "role"> {
   method: ComponentProps<typeof FunctionHeader>["method"];

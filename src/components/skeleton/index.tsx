@@ -2,7 +2,8 @@ import { cn } from "@/utils";
 import { Box } from "@radix-ui/themes";
 import { ComponentProps, FC } from "react";
 
-interface Props extends ComponentProps<typeof Box> {}
+interface Props extends ComponentProps<typeof Box> {
+}
 
 const Skeleton: FC<Props> = (props: Props) => {
   return (

@@ -1,12 +1,12 @@
-import { urqlEndpoint } from "@/config/env";
 import { CodegenConfig } from "@graphql-codegen/cli";
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({ path: "./env.local" });
 
+const schema = process.env.URQL_ENDPOINT_AVALANCHE || process.env.NEXT_PUBLIC_URQL_ENDPOINT_AVALANCHE || "";
 const config: CodegenConfig = {
-  schema: urqlEndpoint.mainnet,
-  documents: ["src/**/*.ts?(x)"],
+  schema: schema,
+  documents: [ "src/**/*.ts?(x)" ],
   ignoreNoDocuments: true, // for better experience with the watcher
   generates: {
     "./src/gql/": {
@@ -15,5 +15,6 @@ const config: CodegenConfig = {
     },
   },
 };
+console.log(config)
 
 export default config;

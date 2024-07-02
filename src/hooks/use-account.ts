@@ -13,20 +13,20 @@ const useAccount = (config?: Parameters<typeof defaultUseAccount>[0]) => {
     status,
   } = defaultUseAccount(config);
 
-  const [rendered, setRendered] = useState(false);
+  const [ rendered, setRendered ] = useState(false);
 
   useEffect(() => setRendered(true), []);
 
   return rendered
     ? {
-        address,
-        connector,
-        isConnected,
-        isConnecting,
-        isDisconnected,
-        isReconnecting,
-        status,
-      }
+      address,
+      connector,
+      isConnected,
+      isConnecting,
+      isDisconnected,
+      isReconnecting,
+      status,
+    }
     : {};
 };
 

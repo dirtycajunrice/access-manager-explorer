@@ -1,24 +1,9 @@
 "use client";
-import {
-  Badge,
-  Card,
-  Flex,
-  Text,
-  Separator,
-  IconButton,
-} from "@radix-ui/themes";
-import {
-  ComponentProps,
-  FC,
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { Cross2Icon, StarFilledIcon, StarIcon } from "@radix-ui/react-icons";
-import { cn } from "@/utils";
-
 import { AddressEntity, Entity as EntityType } from "@/types";
+import { cn } from "@/utils";
+import { Cross2Icon, StarFilledIcon, StarIcon } from "@radix-ui/react-icons";
+import { Badge, Card, Flex, IconButton, Separator, Text } from "@radix-ui/themes";
+import { ComponentProps, FC, ReactNode, useEffect, useRef, useState } from "react";
 
 interface Favorites {
   toggle: () => void;
@@ -36,25 +21,25 @@ interface Props extends Omit<ComponentProps<typeof Card>, "role"> {
 }
 
 const Entity: FC<Props> = ({
-  entityType,
-  children,
-  description,
-  className,
-  remove,
-  favorites,
-  header,
-  isLast,
-  ...props
-}) => {
+                             entityType,
+                             children,
+                             description,
+                             className,
+                             remove,
+                             favorites,
+                             header,
+                             isLast,
+                             ...props
+                           }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [scrolled, setScrolled] = useState(false);
+  const [ scrolled, setScrolled ] = useState(false);
 
   useEffect(() => {
     if (isLast && !scrolled) {
       ref.current?.scrollIntoView({ behavior: "smooth" });
       setScrolled(true);
     }
-  }, [isLast, scrolled]);
+  }, [ isLast, scrolled ]);
 
   return (
     <Card

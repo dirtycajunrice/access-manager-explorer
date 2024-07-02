@@ -11,11 +11,11 @@ interface Props<T extends Kind> {
 }
 
 const FavoritesSection = <T extends Kind>({
-  name,
-  data,
-  onRender,
-}: Props<T>) => {
-  const [open, setOpen] = useState(true);
+                                            name,
+                                            data,
+                                            onRender,
+                                          }: Props<T>) => {
+  const [ open, setOpen ] = useState(true);
 
   return (
     <Collapsible.Root

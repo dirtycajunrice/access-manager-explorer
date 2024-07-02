@@ -1,18 +1,10 @@
 "use client";
-import {
-  createContext,
-  ReactNode,
-  FC,
-  useEffect,
-  useMemo,
-  useCallback,
-} from "react";
-import { SupportedChainDefinition, SupportedChainId } from "@/types";
-import { useNetwork } from "wagmi";
-import { WatchNetworkCallback, watchNetwork } from "wagmi/actions";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { chains } from "@/config/chains";
+import { SupportedChainDefinition, SupportedChainId } from "@/types";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { createContext, ReactNode, useCallback, useEffect, useMemo } from "react";
 import { Chain } from "viem/chains";
+import { useAccount } from "wagmi";
 
 interface Props {
   children: ReactNode;
@@ -32,36 +24,35 @@ const defaultContext: Context = {
 
 const routeNetworkContext = createContext<Context>(defaultContext);
 
-const RouteNetworkProvider: FC<Props> = ({
-  children,
-  routeChainId: routeChainIdString,
-}) => {
+const RouteNetworkProvider = ({ children, routeChainId: routeChainIdString }: Props) => {
   const routeChainId = Number(routeChainIdString) as SupportedChainId;
-  const { chain: clientChain } = useNetwork();
+  const { chain: clientChain, isConnected } = useAccount();
   const { replace } = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const routeChain = useMemo(
-    () =>
-      chains.find(({ definition }) => definition.id == routeChainId)!
-        .definition,
-    [routeChainId]
+    () => chains.find(({ definition }) => definition.id === routeChainId)!.definition,
+    [ routeChainId ],
   );
 
-  const watchNetworkCallback: WatchNetworkCallback = useCallback(
-    ({ chain }) => {
-      const [_, network, chainId, ...items] = pathname.split("/");
+  const watchNetworkCallback = useCallback(
+    ({ chain }: { chain: Chain}) => {
+      const [ _, network, chainId, ...items ] = pathname.split("/");
       replace(
-        `${[_, network, chain?.id.toString() ?? chainId, ...items].join(
-          "/"
-        )}?${searchParams}`
+        `${[ _, network, chain?.id.toString() ?? chainId, ...items ].join(
+          "/",
+        )}?${searchParams}`,
       );
     },
-    [pathname, replace, searchParams]
+    [ pathname, replace, searchParams ],
   );
 
-  useEffect(() => watchNetwork(watchNetworkCallback), [watchNetworkCallback]);
+  useEffect(() => {
+    if (isConnected && clientChain && clientChain.id !== routeChainId) {
+      watchNetworkCallback({chain: clientChain })
+    }
+  }, [watchNetworkCallback, isConnected, clientChain, routeChainId]);
 
   return (
     <routeNetworkContext.Provider

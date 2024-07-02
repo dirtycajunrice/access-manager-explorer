@@ -1,6 +1,6 @@
-import { ComponentPropsWithoutRef, ElementRef, forwardRef } from "react";
-import * as Dialog from "@radix-ui/react-dialog";
 import { cn } from "@/utils";
+import * as Dialog from "@radix-ui/react-dialog";
+import { ComponentPropsWithoutRef, ElementRef, forwardRef } from "react";
 
 const Description = forwardRef<
   ElementRef<typeof Dialog.Description>,

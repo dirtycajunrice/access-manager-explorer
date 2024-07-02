@@ -1,7 +1,8 @@
-import { useState, useCallback, useEffect } from "react";
 import copy from "copy-to-clipboard";
+import { useCallback, useEffect, useState } from "react";
 
-// From https://github.com/chakra-ui/chakra-ui/blob/6d12ea81f4791f4df2953533b570178f59551b74/packages/legacy/hooks/src/use-clipboard.ts
+// From
+// https://github.com/chakra-ui/chakra-ui/blob/6d12ea81f4791f4df2953533b570178f59551b74/packages/legacy/hooks/src/use-clipboard.ts
 
 export interface UseClipboardOptions {
   /**
@@ -27,12 +28,12 @@ export interface UseClipboardOptions {
  */
 export function useClipboard(
   value: string,
-  optionsOrTimeout: number | UseClipboardOptions = {}
+  optionsOrTimeout: number | UseClipboardOptions = {},
 ) {
-  const [hasCopied, setHasCopied] = useState(false);
+  const [ hasCopied, setHasCopied ] = useState(false);
 
-  const [valueState, setValueState] = useState(value);
-  useEffect(() => setValueState(value), [value]);
+  const [ valueState, setValueState ] = useState(value);
+  useEffect(() => setValueState(value), [ value ]);
 
   const { timeout = 1500, ...copyOptions } =
     typeof optionsOrTimeout === "number"
@@ -42,7 +43,7 @@ export function useClipboard(
   const onCopy = useCallback(() => {
     const didCopy = copy(valueState, copyOptions);
     setHasCopied(didCopy);
-  }, [valueState, copyOptions]);
+  }, [ valueState, copyOptions ]);
 
   useEffect(() => {
     let timeoutId: number | null = null;
@@ -58,7 +59,7 @@ export function useClipboard(
         window.clearTimeout(timeoutId);
       }
     };
-  }, [timeout, hasCopied]);
+  }, [ timeout, hasCopied ]);
 
   return {
     value: valueState,

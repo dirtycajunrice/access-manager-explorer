@@ -24,7 +24,7 @@ const MemberOf: FC<Props> = ({ membership, onNavigate }) => {
       id: role.id,
       asRole: asRole,
     },
-    ACCESS_MANAGER_ROLE_FRAGMENT
+    ACCESS_MANAGER_ROLE_FRAGMENT,
   );
 
   const clearAndPushNav = (entity: EntityInstance) => {

@@ -1,8 +1,9 @@
 import { InfoCircledIcon } from "@radix-ui/react-icons";
-import { HoverCard, IconButton, Text } from "@radix-ui/themes";
+import { HoverCard, IconButton } from "@radix-ui/themes";
 import { ComponentProps, FC } from "react";
 
-interface Props extends ComponentProps<typeof IconButton> {}
+interface Props extends ComponentProps<typeof IconButton> {
+}
 
 const Info: FC<Props> = (props) => {
   return (

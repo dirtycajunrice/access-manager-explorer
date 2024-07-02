@@ -1,7 +1,7 @@
 "use client";
+import RoleHeader from "@/components/role";
 import { ComponentProps, FC } from "react";
 import Entity from "../entity";
-import RoleHeader from "@/components/role";
 
 interface Props extends Omit<ComponentProps<typeof Entity>, "header"> {
   accessManagerRole: ComponentProps<typeof RoleHeader>["accessManagerRole"];

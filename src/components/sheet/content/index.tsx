@@ -1,9 +1,9 @@
-import { ComponentPropsWithoutRef, ElementRef, forwardRef } from "react";
-import * as Dialog from "@radix-ui/react-dialog";
 import { cn } from "@/utils";
-import { IconButton, Theme } from "@radix-ui/themes";
+import * as Dialog from "@radix-ui/react-dialog";
 import { Cross2Icon } from "@radix-ui/react-icons";
-import { VariantProps, cva } from "class-variance-authority";
+import { IconButton, Theme } from "@radix-ui/themes";
+import { cva, VariantProps } from "class-variance-authority";
+import { ComponentPropsWithoutRef, ElementRef, forwardRef } from "react";
 import Overlay from "../overlay";
 
 const sheetVariants = cva(
@@ -22,12 +22,13 @@ const sheetVariants = cva(
     defaultVariants: {
       side: "right",
     },
-  }
+  },
 );
 
 interface ContentProps
   extends ComponentPropsWithoutRef<typeof Dialog.Description>,
-    VariantProps<typeof sheetVariants> {}
+    VariantProps<typeof sheetVariants> {
+}
 
 const Content = forwardRef<ElementRef<typeof Dialog.Description>, ContentProps>(
   ({ side = "right", className, children, ...props }, ref) => (
@@ -49,7 +50,7 @@ const Content = forwardRef<ElementRef<typeof Dialog.Description>, ContentProps>(
         </Overlay>
       </Theme>
     </Dialog.Portal>
-  )
+  ),
 );
 
 Content.displayName = Dialog.Description.displayName;

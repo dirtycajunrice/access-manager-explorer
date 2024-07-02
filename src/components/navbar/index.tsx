@@ -1,11 +1,11 @@
-import Link from "next/link";
-import Logo from "./logo";
 import { Box, Card, Flex, Separator, Text } from "@radix-ui/themes";
-import Search from "./search";
+import Link from "next/link";
 import { FC } from "react";
-import ResponsiveMenu from "./responsive-menu";
 import ConnectButton from "../connect-button";
 import DeployManager from "../deploy/manager";
+import Logo from "./logo";
+import ResponsiveMenu from "./responsive-menu";
+import Search from "./search";
 import Social from "./social";
 
 const Navbar: FC<{}> = () => {
@@ -63,30 +63,7 @@ const Navbar: FC<{}> = () => {
             <Box ml="auto" className="align-center justify-end hidden lg:flex">
               <Flex asChild align="center" mx="2">
                 <nav>
-                  <ConnectButton
-                    mr="2"
-                    states={{
-                      connect: {
-                        variant: "solid",
-                        color: "blue",
-                      },
-                      wrongNetwork: {
-                        variant: "soft",
-                        color: "red",
-                      },
-                      connected: {
-                        account: {
-                          variant: "outline",
-                          color: "gray",
-                        },
-                        chain: {
-                          variant: "soft",
-                          color: "gray",
-                          mr: "2",
-                        },
-                      },
-                    }}
-                  />
+                  <ConnectButton />
                   <DeployManager variant="soft" mr="2">
                     Deploy
                   </DeployManager>

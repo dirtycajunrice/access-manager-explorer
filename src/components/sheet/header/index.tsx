@@ -1,12 +1,12 @@
-import { ComponentProps, FC } from "react";
-import { Box } from "@radix-ui/themes";
 import { cn } from "@/utils";
+import { Box } from "@radix-ui/themes";
+import { ComponentProps, FC } from "react";
 
 const Header: FC<ComponentProps<typeof Box>> = ({ className, ...props }) => (
   <Box
     className={cn(
       "flex flex-col text-center sm:text-left",
-      className
+      className,
     )}
     {...props}
   />

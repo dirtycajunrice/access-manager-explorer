@@ -1,7 +1,7 @@
 import Address from "@/components/address";
 import { AddressEntity } from "@/types";
 import { CircleIcon } from "@radix-ui/react-icons";
-import { Callout, Flex, Card } from "@radix-ui/themes";
+import { Callout, Card, Flex } from "@radix-ui/themes";
 import { FC } from "react";
 
 interface Props {

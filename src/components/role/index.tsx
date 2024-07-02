@@ -1,20 +1,18 @@
+import { FragmentType, useFragment as asFragment } from "@/gql/fragment-masking";
+import { useEntities } from "@/providers/entities";
+import { Entity } from "@/types";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { Badge, Code, IconButton, Separator, Text } from "@radix-ui/themes";
 import { ComponentProps, FC } from "react";
 import Info from "../info";
-import { ArrowRightIcon } from "@radix-ui/react-icons";
-import {
-  FragmentType,
-  useFragment as asFragment,
-} from "@/gql/fragment-masking";
 import { ACCESS_MANAGER_ROLE_FRAGMENT } from "./requests";
-import { useEntities } from "@/providers/entities";
-import { Entity } from "@/types";
 
 interface Role {
   id: string;
 }
 
-interface IconProps extends ComponentProps<typeof Info> {}
+interface IconProps extends ComponentProps<typeof Info> {
+}
 
 interface IconProps {
   unlabelled?: boolean | IconProps;
@@ -29,7 +27,9 @@ interface Props extends Omit<ComponentProps<typeof Badge>, "role"> {
 const Role: FC<Props> = ({ accessManagerRole, icons, ...props }) => {
   const role = asFragment(ACCESS_MANAGER_ROLE_FRAGMENT, accessManagerRole);
   const isLabel = typeof role.label !== "undefined";
-  if (isLabel && !role.label && role.asRole.id == "0") role.label = "ADMIN";
+  if (isLabel && !role.label && role.asRole.id == "0") {
+    role.label = "ADMIN";
+  }
 
   const entities = useEntities();
 
@@ -46,9 +46,11 @@ const Role: FC<Props> = ({ accessManagerRole, icons, ...props }) => {
               {"UNLABELED"}
               {icons?.unlabelled && (
                 <Info
-                  {...(icons.unlabelled == true
-                    ? undefined
-                    : { ...icons.unlabelled })}
+                  {...(
+                    icons.unlabelled == true
+                      ? undefined
+                      : { ...icons.unlabelled }
+                  )}
                 >
                   <Text size="1">
                     An role can be labeled by the AccessManager admins via the{" "}
@@ -70,7 +72,7 @@ const Role: FC<Props> = ({ accessManagerRole, icons, ...props }) => {
           onClick={() =>
             entities.push(
               { type: Entity.AccessManagerRole, id: role.id },
-              navigateAt
+              navigateAt,
             )
           }
         >

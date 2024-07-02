@@ -1,33 +1,23 @@
 "use client";
-import {
-  Box,
-  Card,
-  Callout,
-  Flex,
-  Heading,
-  Separator,
-  Text,
-  Code,
-  Grid,
-} from "@radix-ui/themes";
-import { ComponentProps, FC, useMemo } from "react";
-import { useQuery } from "urql";
-import { ACCESS_MANAGER_ROLE_QUERY } from "./requests";
-import Skeleton from "./skeleton";
-import { CircleIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import { AddressEntity, Entity } from "@/types";
-import Role from "../as/role";
 import Address from "@/components/address";
 import DelayedValue from "@/components/delayed-value";
+import FunctionBadge from "@/components/function";
+import { ACCESS_MANAGER_TARGET_FUNCTION_FRAGMENT } from "@/components/function/requests";
 import Info from "@/components/info";
 import RoleBadge from "@/components/role";
-import FunctionBadge from "@/components/function";
-import { makeFragmentData, useFragment as asFragment } from "@/gql";
 import { ACCESS_MANAGER_ROLE_FRAGMENT } from "@/components/role/requests";
-import { ACCESS_MANAGER_TARGET_FUNCTION_FRAGMENT } from "@/components/function/requests";
-import { useFavorites } from "@/providers/favorites";
-import Empty from "../empty";
+import { makeFragmentData, useFragment as asFragment } from "@/gql";
 import { useEntities } from "@/providers/entities";
+import { useFavorites } from "@/providers/favorites";
+import { AddressEntity, Entity } from "@/types";
+import { CircleIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { Box, Callout, Card, Code, Flex, Grid, Heading, Separator, Text } from "@radix-ui/themes";
+import { ComponentProps, FC, useMemo } from "react";
+import { useQuery } from "urql";
+import Role from "../as/role";
+import Empty from "../empty";
+import { ACCESS_MANAGER_ROLE_QUERY } from "./requests";
+import Skeleton from "./skeleton";
 
 interface Props extends ComponentProps<typeof Card> {
   id: string;
@@ -36,13 +26,13 @@ interface Props extends ComponentProps<typeof Card> {
 }
 
 const AccessManagerRole: FC<Props> = ({
-  id,
-  className,
-  depth,
-  isLast,
-  ...props
-}) => {
-  const [{ data, fetching, error }] = useQuery({
+                                        id,
+                                        className,
+                                        depth,
+                                        isLast,
+                                        ...props
+                                      }) => {
+  const [ { data, fetching, error } ] = useQuery({
     query: ACCESS_MANAGER_ROLE_QUERY,
     variables: {
       id,
@@ -50,7 +40,7 @@ const AccessManagerRole: FC<Props> = ({
   });
 
   const { splice } = useEntities();
-  const roleId = useMemo(() => id.split("/").reverse()[0], [id]);
+  const roleId = useMemo(() => id.split("/").reverse()[0], [ id ]);
 
   const accessManagerRole = data?.accessManagerRole;
 
@@ -63,7 +53,7 @@ const AccessManagerRole: FC<Props> = ({
           id: roleId,
         },
       },
-      ACCESS_MANAGER_ROLE_FRAGMENT
+      ACCESS_MANAGER_ROLE_FRAGMENT,
     );
 
   const favorites = useFavorites();
@@ -190,7 +180,9 @@ const AccessManagerRole: FC<Props> = ({
               )}
             </Flex>
             <Separator size="4" my="3" />
-            {(accessManagerRole?.adminOf.length ?? 0) > 0 && (
+            {(
+              accessManagerRole?.adminOf.length ?? 0
+            ) > 0 && (
               <Flex direction="column">
                 <Heading as="h2" size="3" mt="4" mb="2">
                   Admin of
@@ -211,7 +203,9 @@ const AccessManagerRole: FC<Props> = ({
                 </Grid>
               </Flex>
             )}
-            {(accessManagerRole?.guardianOf.length ?? 0) > 0 && (
+            {(
+              accessManagerRole?.guardianOf.length ?? 0
+            ) > 0 && (
               <Flex direction="column">
                 <Heading as="h2" size="3" mt="4" mb="2">
                   Guardian of
@@ -235,7 +229,9 @@ const AccessManagerRole: FC<Props> = ({
             <Heading as="h2" size="3" mt="4" mb="2">
               Members
             </Heading>
-            {(accessManagerRole?.members.length ?? 0) > 0 ? (
+            {(
+              accessManagerRole?.members.length ?? 0
+            ) > 0 ? (
               <Flex direction="column">
                 <Flex direction="column" gap="2">
                   {accessManagerRole?.members.map(({ id, asAccount }) => (
@@ -268,12 +264,14 @@ const AccessManagerRole: FC<Props> = ({
             <Heading as="h2" size="3" mt="4" mb="2">
               Functions
             </Heading>
-            {(accessManagerRole?.functions.length ?? 0) > 0 ? (
+            {(
+              accessManagerRole?.functions.length ?? 0
+            ) > 0 ? (
               <Flex direction="column">
                 {accessManagerRole?.functions.map((method) => {
                   const { id } = asFragment(
                     ACCESS_MANAGER_TARGET_FUNCTION_FRAGMENT,
-                    method
+                    method,
                   );
                   return (
                     <FunctionBadge

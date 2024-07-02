@@ -1,21 +1,21 @@
 "use client";
-import { Box, Card, Callout, Tabs } from "@radix-ui/themes";
+import Address from "@/components/address";
+import { useEntities } from "@/providers/entities";
+import { useFavorites } from "@/providers/favorites";
+import { AddressEntity } from "@/types";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { Box, Callout, Card, Tabs } from "@radix-ui/themes";
 import { ComponentProps, FC } from "react";
-import { Address as AddressType } from "viem";
 import { useQuery } from "urql";
+import { Address as AddressType } from "viem";
+import Account from "../as/account";
+import Empty from "../empty";
 import { ACCESS_MANAGER_QUERY } from "./requests";
-import Members from "./tabs/members";
 // import Operations from "./tabs/operations";
 import Skeleton from "./skeleton";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import Targets from "./tabs/targets";
+import Members from "./tabs/members";
 import Roles from "./tabs/roles";
-import Account from "../as/account";
-import { AddressEntity } from "@/types";
-import Address from "@/components/address";
-import { useFavorites } from "@/providers/favorites";
-import Empty from "../empty";
-import { useEntities } from "@/providers/entities";
+import Targets from "./tabs/targets";
 
 interface Props extends ComponentProps<typeof Card> {
   depth: number;
@@ -25,14 +25,14 @@ interface Props extends ComponentProps<typeof Card> {
 }
 
 const AccessManager: FC<Props> = ({
-  address,
-  shortenAddress,
-  className,
-  depth,
-  isLast,
-  ...props
-}) => {
-  const [{ data, fetching, error }] = useQuery({
+                                    address,
+                                    shortenAddress,
+                                    className,
+                                    depth,
+                                    isLast,
+                                    ...props
+                                  }) => {
+  const [ { data, fetching, error } ] = useQuery({
     query: ACCESS_MANAGER_QUERY,
     variables: {
       id: address,
@@ -111,8 +111,8 @@ const AccessManager: FC<Props> = ({
                   />
                 </Tabs.Content>
                 {/* <Tabs.Content value="operations">
-                  <Operations operations={accessManager?.operations} />
-                </Tabs.Content> */}
+                 <Operations operations={accessManager?.operations} />
+                 </Tabs.Content> */}
               </Box>
             </Tabs.Root>
           </>

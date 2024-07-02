@@ -1,9 +1,5 @@
 import { links } from "@/config/site";
-import {
-  GitHubLogoIcon,
-  TwitterLogoIcon,
-  FileTextIcon,
-} from "@radix-ui/react-icons";
+import { FileTextIcon, GitHubLogoIcon, TwitterLogoIcon } from "@radix-ui/react-icons";
 import { Flex, IconButton } from "@radix-ui/themes";
 import Link from "next/link";
 import { ComponentProps, FC } from "react";

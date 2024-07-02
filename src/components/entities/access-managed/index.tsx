@@ -1,17 +1,17 @@
 "use client";
-import { Box, Card, Callout, Flex, Heading, Separator } from "@radix-ui/themes";
-import { ComponentProps, FC } from "react";
-import { Address as AddressType } from "viem";
-import { useQuery } from "urql";
-import Skeleton from "./skeleton";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import Account from "../as/account";
-import { AddressEntity } from "@/types";
 import Address from "@/components/address";
-import { ACCESS_MANAGED_QUERY } from "./requests";
-import { useFavorites } from "@/providers/favorites";
-import Empty from "../empty";
 import { useEntities } from "@/providers/entities";
+import { useFavorites } from "@/providers/favorites";
+import { AddressEntity } from "@/types";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { Box, Callout, Card, Flex, Heading, Separator } from "@radix-ui/themes";
+import { ComponentProps, FC } from "react";
+import { useQuery } from "urql";
+import { Address as AddressType } from "viem";
+import Account from "../as/account";
+import Empty from "../empty";
+import { ACCESS_MANAGED_QUERY } from "./requests";
+import Skeleton from "./skeleton";
 
 interface Props extends ComponentProps<typeof Card> {
   depth: number;
@@ -21,14 +21,14 @@ interface Props extends ComponentProps<typeof Card> {
 }
 
 const AccessManaged: FC<Props> = ({
-  address,
-  shortenAddress,
-  className,
-  depth,
-  isLast,
-  ...props
-}) => {
-  const [{ data, fetching, error }] = useQuery({
+                                    address,
+                                    shortenAddress,
+                                    className,
+                                    depth,
+                                    isLast,
+                                    ...props
+                                  }) => {
+  const [ { data, fetching, error } ] = useQuery({
     query: ACCESS_MANAGED_QUERY,
     variables: {
       id: address,
@@ -100,7 +100,9 @@ const AccessManaged: FC<Props> = ({
               />
             </Flex>
             <Separator size="4" my="3" />
-            {(accessManaged?.asAccount.targettedBy?.length ?? 0) > 0 && (
+            {(
+              accessManaged?.asAccount.targettedBy?.length ?? 0
+            ) > 0 && (
               <Heading as="h2" size="2">Targetted by:</Heading>
             )}
             {accessManaged?.asAccount.targettedBy.map((target) => (

@@ -1,10 +1,7 @@
 "use client";
-import { postEvent } from "@/config/gtag";
-import { useNetwork } from "wagmi";
 import useAccount from "@/hooks/use-account";
 import useDeploy from "@/hooks/use-deploy";
 import { Button, Dialog, Flex, Text, TextField } from "@radix-ui/themes";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { ComponentProps, FC, useEffect, useMemo, useState } from "react";
 import { Address, isAddress } from "viem";
 
@@ -12,11 +9,7 @@ interface ButtonProps extends ComponentProps<typeof Button> {
   onToggleDialog: () => void;
 }
 
-const DeployManagerButton: FC<ButtonProps> = ({
-  onToggleDialog,
-  hidden,
-  ...props
-}) => {
+const DeployManagerButton = ({ onToggleDialog, hidden, ...props}: ButtonProps) => {
   return (
     <Button
       style={{
@@ -34,34 +27,33 @@ interface DialogProps extends ComponentProps<typeof Dialog.Root> {
 }
 
 const DeployManagerDialog: FC<DialogProps> = ({
-  open,
-  onOpenChange,
-  ...props
-}) => {
+                                                open,
+                                                onOpenChange,
+                                                ...props
+                                              }) => {
   const { address } = useAccount();
-  const { chain } = useNetwork();
   const deploy = useDeploy(address);
-  const addRecentTransaction = useAddRecentTransaction();
-  const [initialAdmin, setInitialAdmin] = useState<Address>();
-  const [deploying, setDeploying] = useState(false);
+  //  const addRecentTransaction = useAddRecentTransaction();
+  const [ initialAdmin, setInitialAdmin ] = useState<Address>();
+  const [ deploying, setDeploying ] = useState(false);
 
   useEffect(() => {
-    if (!initialAdmin && address) setInitialAdmin(address);
-  }, [address, initialAdmin]);
+    if (!initialAdmin && address) {
+      setInitialAdmin(address);
+    }
+  }, [ address, initialAdmin ]);
 
   const deployManager = async () => {
     setDeploying(true);
 
     try {
-      const hash = await deploy.manager(initialAdmin);
+      await deploy.manager(initialAdmin);
 
-      postEvent({ deployer: address, hash: hash }, 'deploy', chain?.name ?? 'none');
-
-      if (hash) {
-        addRecentTransaction({
-          hash,
-          description: "Deploy Manager",
-        });
+      if (deploy.hash) {
+        //  addRecentTransaction({
+        //    hash,
+        //    description: "Deploy Manager",
+        //  });
       }
     } catch {
     } finally {
@@ -72,14 +64,13 @@ const DeployManagerDialog: FC<DialogProps> = ({
 
   const isValidAddress = useMemo(
     () => isAddress(initialAdmin ?? ""),
-    [initialAdmin]
+    [ initialAdmin ],
   );
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange} {...props}>
       <Dialog.Content style={{ maxWidth: 450 }}>
         <Dialog.Title>Deploy an AccessManager</Dialog.Title>
-
         <Flex direction="column" gap="3">
           <label>
             <Text as="div" size="2" mb="1" weight="bold">
@@ -94,7 +85,6 @@ const DeployManagerDialog: FC<DialogProps> = ({
             />
           </label>
         </Flex>
-
         <Flex gap="3" mt="4" justify="end">
           <Dialog.Close>
             <Button variant="soft" color="gray">
@@ -120,7 +110,7 @@ interface DeployManager
 }
 
 const DeployManager: DeployManager = ({ ...props }) => {
-  const [open, setOpen] = useState(false);
+  const [ open, setOpen ] = useState(false);
   const { address } = useAccount();
 
   return (

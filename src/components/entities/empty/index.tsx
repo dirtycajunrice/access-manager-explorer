@@ -1,12 +1,12 @@
+import ROUTES from "@/config/routes";
 import { useRouteNetwork } from "@/providers/route-network";
+import { SupportedChainId } from "@/types";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { Callout, Link } from "@radix-ui/themes";
-import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FC, useMemo } from "react";
 import { Chain } from "viem/chains";
-import ROUTES from "@/config/routes";
-import { SupportedChainId } from "@/types";
 
 interface Props {
   callout: {
@@ -15,8 +15,7 @@ interface Props {
 }
 
 const Empty: FC<Props> = ({ callout: { text } }) => {
-  const { openChainModal } = useChainModal();
-  const { openConnectModal } = useConnectModal();
+  const { open } = useWeb3Modal();
   const { routeChain, clientChain } = useRouteNetwork();
   const searchParams = useSearchParams();
 
@@ -30,27 +29,31 @@ const Empty: FC<Props> = ({ callout: { text } }) => {
     } else if (clientChain.id !== routeChain.id) {
       return `Use your wallet's network (${routeChain.name}).`;
     }
-  }, [clientChain, routeChain]);
+  }, [ clientChain, routeChain ]);
 
   const onChangeNetwork = () => {
     if (!clientChain) {
-      openConnectModal?.();
+      open({ view: "Connect"});
     } else if (clientChain?.id === routeChain.id) {
-      openChainModal?.();
+      open({ view: "Networks" });
     } else if (clientChain.id !== routeChain.id) {
       replace(
         `${ROUTES.EXPLORER.ROOT(
-          clientChain?.id as SupportedChainId
-        )}?${searchParams}`
+          clientChain?.id as SupportedChainId,
+        )}?${searchParams}`,
       );
     }
   };
 
   const textString = useMemo(() => {
-    if (typeof text === "string") return text;
-    if (clientChain) return text(clientChain);
+    if (typeof text === "string") {
+      return text;
+    }
+    if (clientChain) {
+      return text(clientChain);
+    }
     return "";
-  }, [text, clientChain]);
+  }, [ text, clientChain ]);
 
   return (
     <Callout.Root color="amber">

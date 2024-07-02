@@ -1,26 +1,20 @@
 "use client";
-import Sheet from "@/components/sheet";
-import { HamburgerMenuIcon } from "@radix-ui/react-icons";
-import {
-  Box,
-  Button,
-  IconButton,
-  Separator,
-  Text,
-  VisuallyHidden,
-} from "@radix-ui/themes";
-import { ComponentProps, FC, useRef } from "react";
-import SidebarContent from "@/components/sidebar/content";
-import Logo from "../logo";
 import ConnectButton from "@/components/connect-button";
 import DeployManager from "@/components/deploy/manager";
-import Social from "../social";
+import Sheet from "@/components/sheet";
+import SidebarContent from "@/components/sidebar/content";
 import useAccount from "@/hooks/use-account";
+import { HamburgerMenuIcon } from "@radix-ui/react-icons";
+import { Box, Button, IconButton, Separator, Text, VisuallyHidden } from "@radix-ui/themes";
+import { ComponentProps, FC, useRef } from "react";
+import Logo from "../logo";
 import Search from "../search";
+import Social from "../social";
 
 const { Root, Trigger, Content, Header, Close } = Sheet;
 
-interface Props extends ComponentProps<typeof Box> {}
+interface Props extends ComponentProps<typeof Box> {
+}
 
 const ResponsiveMenu: FC<Props> = ({ ...props }) => {
   const { address } = useAccount();
@@ -65,31 +59,7 @@ const ResponsiveMenu: FC<Props> = ({ ...props }) => {
             }}
           />
           <Separator hidden={!address} my="3" size="4" />
-          <ConnectButton
-            hidden={!address}
-            mr="2"
-            states={{
-              connect: {
-                variant: "solid",
-                color: "blue",
-              },
-              wrongNetwork: {
-                variant: "soft",
-                color: "red",
-              },
-              connected: {
-                account: {
-                  variant: "outline",
-                  color: "gray",
-                },
-                chain: {
-                  variant: "soft",
-                  color: "gray",
-                  mr: "2",
-                },
-              },
-            }}
-          />
+          <ConnectButton />
           <Box hidden={!address}>
             <Separator my="3" size="4" />
             <DeployManager size="1" variant="soft" className="w-full">

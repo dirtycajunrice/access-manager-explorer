@@ -1,28 +1,21 @@
 "use client";
 
+import Address from "@/components/address";
+import Role from "@/components/role";
+import { ACCESS_MANAGER_ROLE_FRAGMENT } from "@/components/role/requests";
+import { makeFragmentData, useFragment as asFragment } from "@/gql";
+import { useEntities } from "@/providers/entities";
+import { EntityInstance } from "@/providers/entities/provider";
+import { AddressEntity } from "@/types";
+import { cn } from "@/utils";
 import { CircleIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import {
-  Badge,
-  Callout,
-  DropdownMenu,
-  Flex,
-  TextField,
-} from "@radix-ui/themes";
+import { Badge, Callout, DropdownMenu, Flex, TextField } from "@radix-ui/themes";
 import { ComponentProps, FC, useEffect, useMemo, useState } from "react";
-import { ACCOUNT_QUERY } from "./requests";
+import { useQuery } from "urql";
 import { useDebounce } from "use-debounce";
 import { isAddress } from "viem";
-import { useQuery } from "urql";
-import Address from "@/components/address";
-import { postEvent } from "@/config/gtag";
-import { useNetwork } from "wagmi";
-import { cn } from "@/utils";
-import Role from "@/components/role";
-import { makeFragmentData, useFragment as asFragment } from "@/gql";
-import { ACCESS_MANAGER_ROLE_FRAGMENT } from "@/components/role/requests";
-import { useEntities } from "@/providers/entities";
-import { AddressEntity } from "@/types";
-import { EntityInstance } from "@/providers/entities/provider";
+import { ACCOUNT_QUERY } from "./requests";
+
 const { Root, Slot, Input } = TextField;
 
 interface Props extends ComponentProps<typeof Root> {
@@ -30,19 +23,18 @@ interface Props extends ComponentProps<typeof Root> {
   onNavigate?: (entity: EntityInstance) => void;
 }
 
-const Search: FC<Props> = ({ input, onNavigate = () => { }, ...props }) => {
-  const [address, setAddress] = useState("");
-  const { chain } = useNetwork();
-  const [debouncedAddress] = useDebounce(address, 300);
-  const [open, setOpen] = useState(false);
+const Search: FC<Props> = ({ input, onNavigate = () => console.log(), ...props }) => {
+  const [ address, setAddress ] = useState("");
+  const [ debouncedAddress ] = useDebounce(address, 300);
+  const [ open, setOpen ] = useState(false);
   const entities = useEntities();
 
   const isInputAddress = useMemo(
     () => isAddress(debouncedAddress),
-    [debouncedAddress]
+    [ debouncedAddress ],
   );
 
-  const [{ data, fetching }] = useQuery({
+  const [ { data, fetching } ] = useQuery({
     query: ACCOUNT_QUERY,
     variables: {
       id: debouncedAddress,
@@ -63,30 +55,26 @@ const Search: FC<Props> = ({ input, onNavigate = () => { }, ...props }) => {
       };
       result.isData = !!data;
 
-      if (!data?.account) return result;
+      if (!data?.account) {
+        return result;
+      }
 
       result.isManager = !!data?.account?.asAccessManager;
       result.isManaged = !!data?.account?.asAccessManaged;
       result.hasMembership = data?.account?.membership.length > 0;
       result.isTarget = data?.account?.targettedBy.length > 0;
 
-      result.hasResults =
-        result.isManager ||
-        result.isManaged ||
-        result.hasMembership ||
-        result.isTarget;
+      result.hasResults = result.isManager || result.isManaged;
+      result.hasResults = result.hasResults || result.hasMembership || result.isTarget;
 
       return result;
-    }, [data]);
+    }, [ data ]);
 
   useEffect(() => {
     setOpen(isInputAddress && isData);
-  }, [isData, data, isInputAddress, address]);
+  }, [ isData, data, isInputAddress, address ]);
 
   const clearAndReset = (entity: EntityInstance) => {
-    const inputs = entity.id.split("/", 3);
-    postEvent({ account: inputs[2], manager: inputs[0], hasRole: inputs[1] }, 'search', chain?.name ?? 'none');
-
     entities.clearAndPush(entity);
     setAddress("");
     onNavigate(entity);
@@ -175,7 +163,7 @@ const Search: FC<Props> = ({ input, onNavigate = () => { }, ...props }) => {
                 {data?.account?.membership.map((membership) => {
                   const role = asFragment(
                     ACCESS_MANAGER_ROLE_FRAGMENT,
-                    membership.role
+                    membership.role,
                   );
                   return (
                     <DropdownMenu.Item
@@ -206,7 +194,7 @@ const Search: FC<Props> = ({ input, onNavigate = () => { }, ...props }) => {
                               id: role.label ?? role.asRole.id,
                             },
                           },
-                          ACCESS_MANAGER_ROLE_FRAGMENT
+                          ACCESS_MANAGER_ROLE_FRAGMENT,
                         )}
                       />
                       <Badge color="amber" ml="auto" size="1" variant="solid">
@@ -258,7 +246,7 @@ const Search: FC<Props> = ({ input, onNavigate = () => { }, ...props }) => {
             "animate-spin inline-block w-4 h-4 border-2 border-current border-t-transparent text-gray-600 rounded-full",
             {
               invisible: !fetching,
-            }
+            },
           )}
           role="status"
           aria-label="loading"

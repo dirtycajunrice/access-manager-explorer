@@ -1,11 +1,8 @@
-import { Badge, Flex, HoverCard, IconButton, Text } from "@radix-ui/themes";
-import { ComponentProps, FC, useMemo } from "react";
-import { useFormatter, useNow } from "next-intl";
+import { FragmentType, useFragment as asFragment } from "@/gql/fragment-masking";
 import { ArrowRightIcon, InfoCircledIcon } from "@radix-ui/react-icons";
-import {
-  FragmentType,
-  useFragment as asFragment,
-} from "@/gql/fragment-masking";
+import { Badge, Flex, HoverCard, IconButton, Text } from "@radix-ui/themes";
+import { useFormatter, useNow } from "next-intl";
+import { ComponentProps, FC, useMemo } from "react";
 import { DELAYED_BIG_INT_FRAGMENT } from "./requests";
 
 interface Props extends ComponentProps<typeof Badge> {
@@ -32,7 +29,7 @@ const duration = (oldValue: number) => {
   let remainingSeconds = oldValue;
   const result = {} as Units;
 
-  for (const [unit, seconds] of Object.entries(unitsInSeconds)) {
+  for (const [ unit, seconds ] of Object.entries(unitsInSeconds)) {
     const value = Math.floor(remainingSeconds / seconds);
     remainingSeconds -= value * seconds;
     result[unit as keyof Units] = value;
@@ -49,11 +46,21 @@ const formatDuration = ({ weeks, days, hours, minutes, seconds }: Units) => {
   const s = `${seconds}s`;
 
   let result = "";
-  if (weeks > 0) result += w;
-  if (days > 0) result += d;
-  if (hours > 0) result += h;
-  if (minutes > 0) result += m;
-  if (seconds > 0) result += s;
+  if (weeks > 0) {
+    result += w;
+  }
+  if (days > 0) {
+    result += d;
+  }
+  if (hours > 0) {
+    result += h;
+  }
+  if (minutes > 0) {
+    result += m;
+  }
+  if (seconds > 0) {
+    result += s;
+  }
 
   return result || "immediate";
 };
@@ -61,17 +68,17 @@ const formatDuration = ({ weeks, days, hours, minutes, seconds }: Units) => {
 const DelayedValue: FC<Props> = ({ value: delayedValue, ...props }) => {
   const { since, oldValue, value } = asFragment(
     DELAYED_BIG_INT_FRAGMENT,
-    delayedValue
+    delayedValue,
   );
   const format = useFormatter();
   const now = useNow();
 
   const hasEffect = useMemo(() => {
     return now.getTime() >= since * 1000;
-  }, [since, now]);
+  }, [ since, now ]);
 
-  const units = useMemo(() => duration(value), [value]);
-  const oldValueUnits = useMemo(() => duration(oldValue), [oldValue]);
+  const units = useMemo(() => duration(value), [ value ]);
+  const oldValueUnits = useMemo(() => duration(oldValue), [ oldValue ]);
 
   const oldValueComponent = (
     <Badge size="1" variant="soft" {...props}>

@@ -1,13 +1,8 @@
 "use client";
-import { ConnectButton as RainbowKitConnectButton } from "@rainbow-me/rainbowkit";
-import Inner from "./Inner";
-import { ComponentProps, FC } from "react";
 
-const ConnectButton: FC<Partial<ComponentProps<typeof Inner>>> = (props) => {
+const ConnectButton = () => {
   return (
-    <RainbowKitConnectButton.Custom>
-      {(innerProps) => <Inner {...innerProps} {...props} />}
-    </RainbowKitConnectButton.Custom>
+    <w3m-button />
   );
 };
 

@@ -1,7 +1,6 @@
-import { Badge, Code, Separator, Text } from "@radix-ui/themes";
-import { ComponentProps, FC } from "react";
-import Info from "../info";
 import { truncateHex } from "@/utils";
+import { Badge, Separator } from "@radix-ui/themes";
+import { ComponentProps, FC } from "react";
 
 interface Operation {
   id: string;

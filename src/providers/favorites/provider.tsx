@@ -1,17 +1,9 @@
 "use client";
-import {
-  useState,
-  createContext,
-  ReactNode,
-  FC,
-  useEffect,
-  useCallback,
-} from "react";
-import { AddressEntity, Entity, SupportedChainId } from "@/types";
-import { useRouteNetwork } from "../route-network";
-
 import { chains as supportedChains } from "@/config/chains";
+import { AddressEntity, Entity, SupportedChainId } from "@/types";
+import { createContext, FC, ReactNode, useCallback, useEffect, useState } from "react";
 import { Address } from "viem";
+import { useRouteNetwork } from "../route-network";
 
 interface Props {
   children: ReactNode;
@@ -37,7 +29,7 @@ type SupportedChainIdFavorites = {
   [key in SupportedChainId]?: Favorites;
 };
 
-export type Entry<T> = { [K in keyof T]: [K, T[K]] }[keyof T];
+export type Entry<T> = { [K in keyof T]: [ K, T[K] ] }[keyof T];
 
 const FAVORITES_KEY = "favorites";
 
@@ -64,33 +56,37 @@ const defaultContext: Omit<
         [Entity.AccessManagerOperation]: {},
       },
     }),
-  {}
+  {},
 );
 
 const favoritesContext = createContext<Context>({
-  setFavorite: () => {},
+  setFavorite: () => {
+  },
   isFavorite: () => false,
-  removeFavorite: () => {},
+  removeFavorite: () => {
+  },
   getFavorites: () => [],
   ...defaultContext,
 });
 
 const FavoritesProvider: FC<Props> = ({ children }) => {
-  const [rendered, setRendered] = useState(false);
-  const [favorites, setFavorites] =
+  const [ rendered, setRendered ] = useState(false);
+  const [ favorites, setFavorites ] =
     useState<SupportedChainIdFavorites>(defaultContext);
   const { currentChain } = useRouteNetwork();
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
 
     if (!rendered) {
       setFavorites(
-        JSON.parse(window.localStorage.getItem(FAVORITES_KEY) || "{}")
+        JSON.parse(window.localStorage.getItem(FAVORITES_KEY) || "{}"),
       );
       setRendered(true);
     }
-  }, [typeof window]);
+  }, [ typeof window ]);
 
   const setFavorite = (entry: Entry<Favorites>) => {
     const kind = entry[0];
@@ -112,7 +108,7 @@ const FavoritesProvider: FC<Props> = ({ children }) => {
     (kind: Kind, displayName: DisplayName) => {
       return !!favorites[currentChain.id]?.[kind]?.[displayName];
     },
-    [favorites, currentChain.id]
+    [ favorites, currentChain.id ],
   );
 
   const removeFavorite = (kind: Kind, displayName: DisplayName) => {
@@ -133,7 +129,7 @@ const FavoritesProvider: FC<Props> = ({ children }) => {
       const favoritesKind = favorites[currentChain.id]?.[kind];
       return Object.entries(favoritesKind ?? {});
     },
-    [favorites, currentChain.id]
+    [ favorites, currentChain.id ],
   );
 
   return (

@@ -1,28 +1,20 @@
 "use client";
-import {
-  Box,
-  Card,
-  Callout,
-  Flex,
-  Heading,
-  Separator,
-  Text,
-} from "@radix-ui/themes";
+import Address from "@/components/address";
+import { ACCESS_MANAGER_TARGET_FUNCTION_FRAGMENT } from "@/components/function/requests";
+import Info from "@/components/info";
+import Role from "@/components/role";
+import { makeFragmentData } from "@/gql";
+import { useEntities } from "@/providers/entities";
+import { useFavorites } from "@/providers/favorites";
+import { AddressEntity, Entity } from "@/types";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { Box, Callout, Card, Flex, Heading, Separator, Text } from "@radix-ui/themes";
 import { ComponentProps, FC, useMemo } from "react";
 import { useQuery } from "urql";
-import { ACCESS_MANAGER_TARGET_FUNCTION_QUERY } from "./requests";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import { AddressEntity, Entity } from "@/types";
-import Skeleton from "./skeleton";
 import Function from "../as/function";
-import Address from "@/components/address";
-import Role from "@/components/role";
-import Info from "@/components/info";
-import { useFavorites } from "@/providers/favorites";
-import { makeFragmentData } from "@/gql";
-import { ACCESS_MANAGER_TARGET_FUNCTION_FRAGMENT } from "@/components/function/requests";
 import Empty from "../empty";
-import { useEntities } from "@/providers/entities";
+import { ACCESS_MANAGER_TARGET_FUNCTION_QUERY } from "./requests";
+import Skeleton from "./skeleton";
 
 interface Props extends ComponentProps<typeof Card> {
   id: string;
@@ -31,14 +23,14 @@ interface Props extends ComponentProps<typeof Card> {
 }
 
 const AccessManagerTargetFunction: FC<Props> = ({
-  id,
-  className,
-  depth,
-  isLast,
-  ...props
-}) => {
+                                                  id,
+                                                  className,
+                                                  depth,
+                                                  isLast,
+                                                  ...props
+                                                }) => {
   const favorites = useFavorites();
-  const [{ data, fetching, error }] = useQuery({
+  const [ { data, fetching, error } ] = useQuery({
     query: ACCESS_MANAGER_TARGET_FUNCTION_QUERY,
     variables: {
       id,
@@ -47,7 +39,7 @@ const AccessManagerTargetFunction: FC<Props> = ({
 
   const { splice } = useEntities();
 
-  const selector = useMemo(() => id.split("/").reverse()[0], [id]);
+  const selector = useMemo(() => id.split("/").reverse()[0], [ id ]);
 
   const accessManagedTargetFunction = data?.accessManagerTargetFunction;
   const method =
@@ -59,7 +51,7 @@ const AccessManagerTargetFunction: FC<Props> = ({
           id: selector,
         },
       },
-      ACCESS_MANAGER_TARGET_FUNCTION_FRAGMENT
+      ACCESS_MANAGER_TARGET_FUNCTION_FRAGMENT,
     );
 
   return (
@@ -79,13 +71,13 @@ const AccessManagerTargetFunction: FC<Props> = ({
           } else {
             favorites.removeFavorite(
               Entity.AccessManagerTargetFunction,
-              selector
+              selector,
             );
           }
         },
         isFavorite: favorites.isFavorite(
           Entity.AccessManagerTargetFunction,
-          selector
+          selector,
         ),
       }}
       remove={() => splice(depth, 1)}

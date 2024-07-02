@@ -1,57 +1,21 @@
-"use client";
-import { Theme as Themes } from "@radix-ui/themes";
-import { FC, ReactNode, useMemo } from "react";
-import { ThemeProvider, useTheme } from "next-themes";
-import { Provider } from "urql";
-import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
-import { chains } from "@/config/wallet";
-import { chains as suportedChains } from "@/config/chains";
-import { getUrqlClient } from "@/config/urql";
-import { useRouteNetwork } from "@/providers/route-network";
 
-interface Props {
-  children: ReactNode;
-}
+import ThemeProvider from "@/components/providers/theme-provider";
+import Web3Provider from "@/components/providers/web3-provider";
+import { config } from "@/config/wallet";
+import { headers } from "next/headers";
+import { PropsWithChildren } from "react";
+import { cookieToInitialState } from "wagmi";
 
-const Theme: FC<Props> = ({ children }) => {
+const Providers = ({ children }: PropsWithChildren) => {
+  const initialState = cookieToInitialState(config, headers().get("cookie"));
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="light"
-      disableTransitionOnChange
-    >
-      <Themes accentColor="blue">{children}</Themes>
+    <ThemeProvider attribute="class" defaultTheme="dark">
+      <Web3Provider initialState={initialState}>
+        {children}
+      </Web3Provider>
     </ThemeProvider>
+
   );
 };
-
-const Urql: FC<Props> = ({ children }) => {
-  const { currentChain } = useRouteNetwork();
-
-  const client = useMemo(() => {
-    const supportedChain = suportedChains.find(
-      ({ definition }) => definition.id == currentChain.id
-    );
-    if (!supportedChain) return;
-    return getUrqlClient(supportedChain);
-  }, [currentChain.id]);
-
-  if (!client) return <></>;
-
-  return <Provider value={client}>{children}</Provider>;
-};
-
-const RainbowKit: FC<Props> = ({ children }) => {
-  const { theme } = useTheme();
-  return (
-    <RainbowKitProvider
-      theme={theme == "light" ? undefined : darkTheme()}
-      chains={chains}
-      showRecentTransactions={true}
-    >
-      {children}
-    </RainbowKitProvider>
-  );
-};
-
-export { Theme, Urql, RainbowKit };
+Providers.displayName = "Providers";
+export { Providers };

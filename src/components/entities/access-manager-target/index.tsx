@@ -1,36 +1,21 @@
 "use client";
-import {
-  Box,
-  Callout,
-  Flex,
-  Separator,
-  Heading,
-  Badge,
-  Text,
-  Code,
-  Button,
-  Card,
-} from "@radix-ui/themes";
-import { ComponentProps, FC, useMemo } from "react";
-import { Address as AddressType } from "viem";
-import { useQuery } from "urql";
-import Skeleton from "./skeleton";
-import {
-  ArrowRightIcon,
-  CircleIcon,
-  ExclamationTriangleIcon,
-} from "@radix-ui/react-icons";
-import Account from "../as/account";
-import { AddressEntity, Entity } from "@/types";
 import Address from "@/components/address";
-import Function from "@/components/function";
-import { ACCESS_MANAGER_TARGET_QUERY } from "./request";
 import DelayedValue from "@/components/delayed-value";
+import Function from "@/components/function";
 import Info from "@/components/info";
+import { useEntities } from "@/providers/entities";
 
 import { useFavorites } from "@/providers/favorites";
+import { AddressEntity, Entity } from "@/types";
+import { ArrowRightIcon, CircleIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { Badge, Box, Button, Callout, Card, Code, Flex, Heading, Separator, Text } from "@radix-ui/themes";
+import { ComponentProps, FC, useMemo } from "react";
+import { useQuery } from "urql";
+import { Address as AddressType } from "viem";
+import Account from "../as/account";
 import Empty from "../empty";
-import { useEntities } from "@/providers/entities";
+import { ACCESS_MANAGER_TARGET_QUERY } from "./request";
+import Skeleton from "./skeleton";
 
 interface Props extends ComponentProps<typeof Card> {
   depth: number;
@@ -40,14 +25,14 @@ interface Props extends ComponentProps<typeof Card> {
 }
 
 const AccessManagerTarget: FC<Props> = ({
-  id,
-  shortenAddress,
-  className,
-  depth,
-  isLast,
-  ...props
-}) => {
-  const [{ data, fetching, error }] = useQuery({
+                                          id,
+                                          shortenAddress,
+                                          className,
+                                          depth,
+                                          isLast,
+                                          ...props
+                                        }) => {
+  const [ { data, fetching, error } ] = useQuery({
     query: ACCESS_MANAGER_TARGET_QUERY,
     variables: {
       id,
@@ -56,7 +41,7 @@ const AccessManagerTarget: FC<Props> = ({
 
   const { splice } = useEntities();
 
-  const address = useMemo(() => id.split("/").reverse()[0], [id]);
+  const address = useMemo(() => id.split("/").reverse()[0], [ id ]);
 
   const accessManagerTarget = data?.accessManagerTarget;
 
@@ -81,13 +66,13 @@ const AccessManagerTarget: FC<Props> = ({
           } else {
             favorites.removeFavorite(
               AddressEntity.AccessManagerTarget,
-              address
+              address,
             );
           }
         },
         isFavorite: favorites.isFavorite(
           AddressEntity.AccessManagerTarget,
-          address
+          address,
         ),
       }}
       remove={() => splice(depth, 1)}
@@ -184,7 +169,7 @@ const AccessManagerTarget: FC<Props> = ({
                       type: AddressEntity.AccessManaged,
                       id: accessManagerTarget?.asAccount.asAccessManaged?.id,
                     },
-                    depth
+                    depth,
                   )
                 }
               >
@@ -194,7 +179,9 @@ const AccessManagerTarget: FC<Props> = ({
             <Heading as="h2" size="3" mt="4" mb="2">
               Managed functions
             </Heading>
-            {(accessManagerTarget?.functions.length ?? 0) > 0 ? (
+            {(
+              accessManagerTarget?.functions.length ?? 0
+            ) > 0 ? (
               <Flex direction="column">
                 {accessManagerTarget?.functions.map((method: any) => (
                   <Function

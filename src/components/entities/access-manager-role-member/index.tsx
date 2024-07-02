@@ -1,29 +1,21 @@
 "use client";
-import {
-  Card,
-  Callout,
-  Flex,
-  Heading,
-  Separator,
-  Text,
-  Code,
-} from "@radix-ui/themes";
-import { ComponentProps, FC, useMemo } from "react";
-import { Address as AddressType } from "viem";
-import { useQuery } from "urql";
-import { ACCESS_MANAGER_MEMBER_QUERY } from "./requests";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import Account from "../as/account";
-import { AddressEntity } from "@/types";
 import Address from "@/components/address";
-import Role from "@/components/role";
 import DelayedValue from "@/components/delayed-value";
-import { useFormatter, useNow } from "next-intl";
-import Skeleton from "./skeleton";
 import Info from "@/components/info";
-import { useFavorites } from "@/providers/favorites";
-import Empty from "../empty";
+import Role from "@/components/role";
 import { useEntities } from "@/providers/entities";
+import { useFavorites } from "@/providers/favorites";
+import { AddressEntity } from "@/types";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { Callout, Card, Code, Flex, Heading, Separator, Text } from "@radix-ui/themes";
+import { useFormatter, useNow } from "next-intl";
+import { ComponentProps, FC, useMemo } from "react";
+import { useQuery } from "urql";
+import { Address as AddressType } from "viem";
+import Account from "../as/account";
+import Empty from "../empty";
+import { ACCESS_MANAGER_MEMBER_QUERY } from "./requests";
+import Skeleton from "./skeleton";
 
 interface Props extends ComponentProps<typeof Card> {
   id: string;
@@ -33,14 +25,14 @@ interface Props extends ComponentProps<typeof Card> {
 }
 
 const AccessManagerMember: FC<Props> = ({
-  id,
-  className,
-  depth,
-  shortenAddress,
-  isLast,
-  ...props
-}) => {
-  const [{ data, fetching, error }] = useQuery({
+                                          id,
+                                          className,
+                                          depth,
+                                          shortenAddress,
+                                          isLast,
+                                          ...props
+                                        }) => {
+  const [ { data, fetching, error } ] = useQuery({
     query: ACCESS_MANAGER_MEMBER_QUERY,
     variables: {
       id,
@@ -52,7 +44,7 @@ const AccessManagerMember: FC<Props> = ({
   const format = useFormatter();
   const now = useNow();
 
-  const address = useMemo(() => id.split("/").reverse()[0], [id]);
+  const address = useMemo(() => id.split("/").reverse()[0], [ id ]);
   const accessManagerRoleMember = data?.accessManagerRoleMember;
 
   const favorites = useFavorites();
@@ -65,7 +57,7 @@ const AccessManagerMember: FC<Props> = ({
           if (
             !favorites.isFavorite(
               AddressEntity.AccessManagerRoleMember,
-              address
+              address,
             )
           ) {
             favorites.setFavorite([
@@ -77,13 +69,13 @@ const AccessManagerMember: FC<Props> = ({
           } else {
             favorites.removeFavorite(
               AddressEntity.AccessManagerRoleMember,
-              address
+              address,
             );
           }
         },
         isFavorite: favorites.isFavorite(
           AddressEntity.AccessManagerRoleMember,
-          address
+          address,
         ),
       }}
       entityType={AddressEntity.AccessManagerRoleMember}
@@ -163,7 +155,7 @@ const AccessManagerMember: FC<Props> = ({
               <Text size="2">
                 {format.relativeTime(
                   accessManagerRoleMember?.since * 1000,
-                  now.getTime()
+                  now.getTime(),
                 )}
               </Text>
               {accessManagerRoleMember?.since * 1000 > now.getTime() && (

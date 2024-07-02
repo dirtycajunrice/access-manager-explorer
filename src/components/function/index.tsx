@@ -1,12 +1,12 @@
+import { FragmentType, useFragment as asFragment } from "@/gql";
+import { useSignatures } from "@/hooks/use-signature-database";
+import { useEntities } from "@/providers/entities";
+import { EntityInstance } from "@/providers/entities/provider";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { Code, Flex, IconButton } from "@radix-ui/themes";
 import { ComponentProps, FC } from "react";
-import { ACCESS_MANAGER_TARGET_FUNCTION_FRAGMENT } from "./requests";
-import { FragmentType, useFragment as asFragment } from "@/gql";
-import { useSignatures } from "@/hooks/use-signature-database";
 import { Hex } from "viem";
-import { EntityInstance } from "@/providers/entities/provider";
-import { useEntities } from "@/providers/entities";
+import { ACCESS_MANAGER_TARGET_FUNCTION_FRAGMENT } from "./requests";
 
 type IconButtonProps = ComponentProps<typeof IconButton>;
 
@@ -31,7 +31,7 @@ const ellipsis = {
 const Selector: FC<Props> = ({ method: fn, icons, ...props }) => {
   const method = asFragment(ACCESS_MANAGER_TARGET_FUNCTION_FRAGMENT, fn);
   const { functionWithFallback } = useSignatures({
-    function: [method.asSelector.id] as Hex[],
+    function: [ method.asSelector.id ] as Hex[],
   });
   const entities = useEntities();
 

@@ -4,7 +4,8 @@ import { IconButton } from "@radix-ui/themes";
 import { useTheme } from "next-themes";
 import { ComponentProps, FC } from "react";
 
-interface Props extends ComponentProps<typeof IconButton> {}
+interface Props extends ComponentProps<typeof IconButton> {
+}
 
 const ThemeIcon: FC<Props> = (props) => {
   const { theme, setTheme } = useTheme();

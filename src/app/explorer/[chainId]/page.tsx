@@ -5,32 +5,20 @@ import AccessManagerRole from "@/components/entities/access-manager-role";
 import AccessManagerMember from "@/components/entities/access-manager-role-member";
 import AccessManagerTarget from "@/components/entities/access-manager-target";
 import AccessManagerTargetFunction from "@/components/entities/access-manager-target-function";
+import { useEntities } from "@/providers/entities";
 import { AddressEntity, Entity } from "@/types";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { Button, Flex, Heading } from "@radix-ui/themes";
 import { FC } from "react";
 import { Address } from "viem";
-import { useEntities } from "@/providers/entities";
-import { useEffect } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
-import { gaId } from "@/config/env";
-import { gtag } from "@/config/site";
-import { Button, Flex, Heading } from "@radix-ui/themes";
-import { ArrowRightIcon } from "@radix-ui/react-icons";
 
 const DEMO_MANAGER = "0xc56F7D84c83911767EAcaabA5Ae64A8DFCBC868F";
 
-interface Props {}
+interface Props {
+}
 
 const Explorer: FC<Props> = () => {
   const { entities, clearAndPush } = useEntities();
-
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    gtag("config", gaId, {
-      page_path: `${pathname}?${searchParams}`,
-    });
-  }, [pathname, searchParams]);
 
   if (entities.length === 0) {
     return (
@@ -61,7 +49,7 @@ const Explorer: FC<Props> = () => {
       size: "4",
       variant: "classic",
       className: "no-radius",
-      isLast: depth == entities.length - 1,
+      isLast: depth === entities.length - 1,
     } as const;
 
     const commonStyles = {

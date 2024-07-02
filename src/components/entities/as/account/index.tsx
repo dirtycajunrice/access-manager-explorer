@@ -1,7 +1,7 @@
 "use client";
+import Address from "@/components/address";
 import { Flex } from "@radix-ui/themes";
 import { ComponentProps, FC } from "react";
-import Address from "@/components/address";
 import { Address as AddressType } from "viem";
 import Entity from "../entity";
 
@@ -11,11 +11,11 @@ interface Props extends Omit<ComponentProps<typeof Entity>, "header"> {
 }
 
 const Account: FC<Props> = ({
-  address,
-  shortenAddress,
-  children,
-  ...props
-}) => {
+                              address,
+                              shortenAddress,
+                              children,
+                              ...props
+                            }) => {
   return (
     <Entity
       header={

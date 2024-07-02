@@ -9,9 +9,6 @@ const links = {
   docs: "https://docs.openzeppelin.com/contracts/5.x/access-control#access-management",
 };
 
-const gtag = (...args: Parameters<typeof window.gtag>) => {
-  if (window.gtag) return window.gtag(...args);
-  return Function;
-};
 
-export { title, description, links, gtag };
+
+export { title, description, links };

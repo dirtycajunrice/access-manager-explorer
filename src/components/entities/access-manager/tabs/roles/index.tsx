@@ -12,7 +12,7 @@ interface Props {
 
 const Roles: FC<Props> = ({ roles: fragments, depth }) => {
   const roles = fragments.map((role) =>
-    asFragment(ACCESS_MANAGER_ROLE_FRAGMENT, role)
+    asFragment(ACCESS_MANAGER_ROLE_FRAGMENT, role),
   );
 
   return (
